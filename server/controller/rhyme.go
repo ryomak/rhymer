@@ -16,17 +16,9 @@ var schemaConfig graphql.SchemaConfig = graphql.SchemaConfig{
 var schema, _ = graphql.NewSchema(schemaConfig)
 
 var q graphql.ObjectConfig = graphql.ObjectConfig{
-	Name: "query",
-	Fields: graphql.Fields{
-		"sentence": &graphql.Field{
-			Type: graphql.String,
-			Args: graphql.FieldConfigArgument{
-				"sentence": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-			},
-			Resolve: resolveSentence,
-		},
+	Fields: &graphql.Fields{
+		"sentence": util.SentenceField,
+		"word":     util.WordField,
 	},
 }
 
@@ -57,8 +49,4 @@ func RhymeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w = util.WriteJsonHeader(w, http.StatusOK)
 	json.NewEncoder(w).Encode(result)
-}
-
-func resolveSentence(p graphql.ResolveParams) (interface{}, error) {
-	return "aaa", nil
 }
