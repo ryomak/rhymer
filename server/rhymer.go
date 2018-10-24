@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -8,6 +10,8 @@ import (
 	"github.com/ryomak/rhymer/server/util"
 	"github.com/urfave/negroni"
 )
+
+var port = "8080"
 
 func Run() {
 	r := mux.NewRouter()
@@ -19,7 +23,8 @@ func Run() {
 	n := negroni.New()
 	n.Use(negroni.NewLogger())
 	n.UseHandler(r)
-	http.ListenAndServe(":8080", n)
+	fmt.Printf("start server :port(%v)", port)
+	log.Fatal(http.ListenAndServe(":"+port, n))
 }
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {

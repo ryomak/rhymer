@@ -19,7 +19,12 @@ var q graphql.ObjectConfig = graphql.ObjectConfig{
 	Name: "query",
 	Fields: graphql.Fields{
 		"sentence": &graphql.Field{
-			Type:    graphql.String,
+			Type: graphql.String,
+			Args: graphql.FieldConfigArgument{
+				"sentence": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+			},
 			Resolve: resolveSentence,
 		},
 	},
