@@ -9,6 +9,7 @@ import (
 	"strings"
 	"github.com/jinzhu/gorm"
 	"github.com/ryomak/rhymer/server/model"
+	"fmt"
 )
 
 var t = tokenizer.New()
@@ -67,8 +68,9 @@ func GetNormalRhyme(db *gorm.DB, str string) (interface{}, error) {
 		if err !=nil {
 			er += err.Error()+"\n"
 		}
-		if w!= nil{
+		if w != nil{
 			res=append(res,param{w.Name,w.Yomi,w.RhymeWords})
+			continue
 		}
 		//なければ取得
 		r, err := FetchRhyme(v.Yomi)
@@ -145,5 +147,6 @@ func convertNumberToWord(str string)[]AnalysedWord{
 			w = append(w,AnalysedWord{s,"名詞","レイ"})
 		}
 	}
+	fmt.Printf("%+v",w)
 	return w
 }
