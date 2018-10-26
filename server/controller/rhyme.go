@@ -8,19 +8,28 @@ import (
 
 	"github.com/graphql-go/graphql"
 	"github.com/ryomak/rhymer/server/util"
+	"fmt"
 )
 
-var schemaConfig graphql.SchemaConfig = graphql.SchemaConfig{
-	Query: graphql.NewObject(q),
+func init(){
+	wordData,err := graphql.NewSchema(schemaConfig)
+	if err != nil{
+		panic(err)
+	}
+	schema = wordData
 }
-var schema, _ = graphql.NewSchema(schemaConfig)
+var schema graphql.Schema
 
-var q graphql.ObjectConfig = graphql.ObjectConfig{
-	Fields: &graphql.Fields{
-		"sentence": util.SentenceField,
-		"word":     util.WordField,
-	},
+var schemaConfig graphql.SchemaConfig = graphql.SchemaConfig{
+	Query: rootQuery,
 }
+
+var rootQuery = graphql.NewObject(graphql.ObjectConfig{
+	Name:"query",
+	Fields: graphql.Fields{
+		"word":util.WordField,
+	},
+})
 
 func executeQuery(query string, schema graphql.Schema) (*graphql.Result, error) {
 	r := graphql.Do(graphql.Params{
@@ -28,6 +37,7 @@ func executeQuery(query string, schema graphql.Schema) (*graphql.Result, error) 
 		RequestString: query,
 	})
 	if len(r.Errors) > 0 {
+		fmt.Println(r.Errors)
 		er := ""
 		for _, v := range r.Errors {
 			er += (v.Message + "\n")
@@ -44,7 +54,7 @@ func RhymeHandler(w http.ResponseWriter, r *http.Request) {
 
 	result, err := executeQuery(query, schema)
 	if err != nil {
-		util.JsonErrorResponse(w, http.StatusBadRequest, "リクエストエラー")
+		util.JsonErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	w = util.WriteJsonHeader(w, http.StatusOK)

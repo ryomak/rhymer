@@ -6,6 +6,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ikawaha/kagome/tokenizer"
+	"fmt"
 )
 
 var t = tokenizer.New()
@@ -15,6 +16,7 @@ type Word struct {
 	Class string
 	Yomi  string
 }
+
 
 func Analyse(str string) []Word {
 	tokens := t.Tokenize(str)
@@ -34,6 +36,7 @@ func Analyse(str string) []Word {
 }
 
 func FetchRhyme(str string) ([]string, error) {
+	fmt.Println(str)
 	doc, err := goquery.NewDocument("https://kujirahand.com/web-tools/Words.php?m=boin-search&opt=comp&key=" + str)
 	if err != nil {
 		return nil, err
@@ -42,17 +45,18 @@ func FetchRhyme(str string) ([]string, error) {
 	doc.Find("rb").Each(func(_ int, s *goquery.Selection) {
 		rhymeWords = append(rhymeWords, s.Text())
 	})
+	fmt.Println(rhymeWords)
 	return rhymeWords, nil
 }
 
-func GetNomalRhyme(str string) (interface{}, error) {
-	if !IsOnlyJapanese(str) {
-		return str, errors.New("can use only japanese")
-	}
+func GetNormalRhyme(str string) (interface{}, error) {
 	type param struct {
 		Name       string   `json:"name"`
 		Yomi       string   `json:"yomi"`
-		rhymeWords []string `json:"rhyme_words"`
+		RhymeWords []string `json:"rhyme_words"`
+	}
+	if !IsOnlyJapanese(str) {
+		return param{str,"",nil}, errors.New("can use only japanese")
 	}
 	words := Analyse(str)
 	res := make([]param, 0)
