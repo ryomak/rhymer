@@ -6,22 +6,23 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/ikawaha/kagome/tokenizer"
-	"fmt"
 	"strings"
+	"github.com/jinzhu/gorm"
+	"github.com/ryomak/rhymer/server/model"
 )
 
 var t = tokenizer.New()
 
-type Word struct {
+type AnalysedWord struct {
 	Name  string
 	Class string
 	Yomi  string
 }
 
 
-func Analyse(str string) []Word {
+func Analyse(str string) []AnalysedWord {
 	tokens := t.Tokenize(str)
-	words := make([]Word, 0)
+	words := make([]AnalysedWord, 0)
 	for _, token := range tokens {
 		if token.Class == tokenizer.DUMMY {
 			continue
@@ -30,14 +31,13 @@ func Analyse(str string) []Word {
 		if status[1] == "数" {
 			words = append(words, convertNumberToWord(token.Surface)...)
 		} else {
-			words = append(words, Word{token.Surface, status[0], status[7]})
+			words = append(words, AnalysedWord{token.Surface, status[0], status[7]})
 		}
 	}
 	return words
 }
 
 func FetchRhyme(str string) ([]string, error) {
-	fmt.Println(str)
 	doc, err := goquery.NewDocument("https://kujirahand.com/web-tools/Words.php?m=boin-search&opt=comp&key=" + str)
 	if err != nil {
 		return nil, err
@@ -46,11 +46,10 @@ func FetchRhyme(str string) ([]string, error) {
 	doc.Find("rb").Each(func(_ int, s *goquery.Selection) {
 		rhymeWords = append(rhymeWords, s.Text())
 	})
-	fmt.Println(rhymeWords)
 	return rhymeWords, nil
 }
 
-func GetNormalRhyme(str string) (interface{}, error) {
+func GetNormalRhyme(db *gorm.DB, str string) (interface{}, error) {
 	type param struct {
 		Name       string   `json:"name"`
 		Yomi       string   `json:"yomi"`
@@ -60,14 +59,26 @@ func GetNormalRhyme(str string) (interface{}, error) {
 		return param{str,"",nil}, errors.New("can use only japanese")
 	}
 	words := Analyse(str)
-	fmt.Println(words)
 	res := make([]param, 0)
 	er := ""
 	for _, v := range words {
+		//DBにあるか確認
+		w,err := model.GetWordByYomi(db,v.Yomi)
+		if err !=nil {
+			er += err.Error()+"\n"
+		}
+		if w!= nil{
+			res=append(res,param{w.Name,w.Yomi,w.RhymeWords})
+		}
+		//なければ取得
 		r, err := FetchRhyme(v.Yomi)
 		if err != nil {
 			res = append(res, param{v.Name, v.Yomi, nil})
 			er += err.Error() + "\n"
+		}
+		//DB保存
+		if err := model.AddWord(db,v.Name,v.Yomi,r...);err != nil{
+			er += err.Error()+"\n"
 		}
 		res = append(res, param{v.Name, v.Yomi, r})
 	}
@@ -77,6 +88,7 @@ func GetNormalRhyme(str string) (interface{}, error) {
 	return res, nil
 }
 
+/************ util function ***************/
 //regexp
 var rep = regexp.MustCompile(`[!-/:-~]`)
 
@@ -87,50 +99,50 @@ func IsOnlyJapanese(str string) bool {
 	return true
 }
 
-func convertNumberToWord(str string)[]Word{
+func convertNumberToWord(str string)[]AnalysedWord{
 	sp := strings.Split(str, "")
-	w  := make([]Word,0)
+	w  := make([]AnalysedWord,0)
 	//セパレいと
 	for _,s := range sp {
 		switch s {
 		case "1":
-			w = append(w,Word{s,"名詞","イチ"})
+			w = append(w,AnalysedWord{s,"名詞","イチ"})
 		case "2":
-			w = append(w,Word{s,"名詞","ニ"})
+			w = append(w,AnalysedWord{s,"名詞","ニ"})
 		case "3":
-			w = append(w,Word{s,"名詞","サン"})
+			w = append(w,AnalysedWord{s,"名詞","サン"})
 		case "4":
-			w = append(w,Word{s,"名詞","シ"})
+			w = append(w,AnalysedWord{s,"名詞","シ"})
 		case "5":
-			w = append(w,Word{s,"名詞","ゴ"})
+			w = append(w,AnalysedWord{s,"名詞","ゴ"})
 		case "6":
-			w = append(w,Word{s,"名詞","ロク"})
+			w = append(w,AnalysedWord{s,"名詞","ロク"})
 		case "7":
-			w = append(w,Word{s,"名詞","シチ"})
+			w = append(w,AnalysedWord{s,"名詞","シチ"})
 		case "8":
-			w = append(w,Word{s,"名詞","ハチ"})
+			w = append(w,AnalysedWord{s,"名詞","ハチ"})
 		case "9":
-			w = append(w,Word{s,"名詞","キュウ"})
+			w = append(w,AnalysedWord{s,"名詞","キュウ"})
 		case "１":
-			w = append(w,Word{s,"名詞","イチ"})
+			w = append(w,AnalysedWord{s,"名詞","イチ"})
 		case "２":
-			w = append(w,Word{s,"名詞","ニ"})
+			w = append(w,AnalysedWord{s,"名詞","ニ"})
 		case "３":
-			w = append(w,Word{s,"名詞","サン"})
+			w = append(w,AnalysedWord{s,"名詞","サン"})
 		case "４":
-			w = append(w,Word{s,"名詞","シ"})
+			w = append(w,AnalysedWord{s,"名詞","シ"})
 		case "５":
-			w = append(w,Word{s,"名詞","ゴ"})
+			w = append(w,AnalysedWord{s,"名詞","ゴ"})
 		case "６":
-			w = append(w,Word{s,"名詞","ロク"})
+			w = append(w,AnalysedWord{s,"名詞","ロク"})
 		case "７":
-			w = append(w,Word{s,"名詞","ナナ"})
+			w = append(w,AnalysedWord{s,"名詞","シチ"})
 		case "８":
-			w = append(w,Word{s,"名詞","ハチ"})
+			w = append(w,AnalysedWord{s,"名詞","ハチ"})
 		case "９":
-			w = append(w,Word{s,"名詞","キュウ"})
+			w = append(w,AnalysedWord{s,"名詞","キュウ"})
 		default:
-			w = append(w,Word{s,"名詞","レイ"})
+			w = append(w,AnalysedWord{s,"名詞","レイ"})
 		}
 	}
 	return w

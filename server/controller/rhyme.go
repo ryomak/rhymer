@@ -7,7 +7,12 @@ import (
 
 	"github.com/graphql-go/graphql"
 	"github.com/ryomak/rhymer/server/util"
+	"github.com/jinzhu/gorm"
 )
+
+type RhymeServer struct {
+	DB *gorm.DB
+}
 
 func init(){
 	wordData,err := graphql.NewSchema(schemaConfig)
@@ -31,12 +36,12 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 
 
 
-func RhymeHandler(w http.ResponseWriter, r *http.Request) {
+func (rs RhymeServer)RhymeHandler(w http.ResponseWriter, r *http.Request) {
 	bufBody := new(bytes.Buffer)
 	bufBody.ReadFrom(r.Body)
 	query := bufBody.String()
 
-	result, err := util.ExecuteQuery(query, schema)
+	result, err := util.ExecuteQuery(query, schema,rs.DB)
 	if err != nil {
 		util.JsonErrorResponse(w, http.StatusBadRequest, err.Error())
 		return

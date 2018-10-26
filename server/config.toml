@@ -1,0 +1,12 @@
+# アプリケーションのポート
+Port = "3000"
+PublicKeyPath = "./public-key.pem"
+PrivateKeyPath ="./pribate-key.rsa"
+[database]
+    # MySQL接続設定
+    User = "app"
+    Password = "password"
+    Database = "rhymer_dev"
+    Host  = "localhost"
+    Port = "3306"
+    Debug = true
