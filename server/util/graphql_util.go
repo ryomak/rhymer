@@ -46,15 +46,24 @@ var WordField = &graphql.Field{
 		"sentence": &graphql.ArgumentConfig{
 			Type: graphql.String,
 		},
+		"convert_type": &graphql.ArgumentConfig{
+			Type: graphql.String,
+		},
 	},
 	Resolve: resolveWord,
 }
 
 func resolveWord(p graphql.ResolveParams) (interface{}, error) {
-	arg, ok := p.Args["sentence"].(string)
+	sentence, ok := p.Args["sentence"].(string)
 	if !ok {
 		return nil,errors  .New("sentensce is empty")
 	}
-	return GetNormalRhyme(arg)
+	convertType, ok := p.Args["convert_type"].(string)
+	switch convertType {
+	case "normal":
+		return GetNormalRhyme(sentence)
+	default:
+		return GetNormalRhyme(sentence)
+	}
 }
 /********************************************************/

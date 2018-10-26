@@ -11,11 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="graphql_util.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="graphql_util.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util/graphql_util.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="690">
-              <caret line="46" column="33" lean-forward="false" selection-start-line="46" selection-start-column="33" selection-end-line="46" selection-end-column="33" />
+            <state relative-caret-position="878">
+              <caret line="63" column="25" lean-forward="true" selection-start-line="63" selection-start-column="25" selection-end-line="63" selection-end-column="25" />
               <folding>
                 <element signature="e#14#74#0" expanded="true" />
               </folding>
@@ -35,13 +35,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rhyme.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="rhyme.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/util/rhyme.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="638">
-              <caret line="73" column="37" lean-forward="false" selection-start-line="73" selection-start-column="37" selection-end-line="73" selection-end-column="37" />
+            <state relative-caret-position="192">
+              <caret line="88" column="0" lean-forward="true" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
               <folding>
-                <element signature="e#14#125#0" expanded="true" />
+                <element signature="e#14#136#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -88,9 +88,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/util/rhyme.go" />
         <option value="$PROJECT_DIR$/controller/rhyme.go" />
         <option value="$PROJECT_DIR$/util/graphql_util.go" />
+        <option value="$PROJECT_DIR$/util/rhyme.go" />
       </list>
     </option>
   </component>
@@ -271,13 +271,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/util/rhyme.go">
+    <entry file="file://$PROJECT_DIR$/../../../ikawaha/kagome/tokenizer/token.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="638">
-          <caret line="73" column="37" lean-forward="false" selection-start-line="73" selection-start-column="37" selection-end-line="73" selection-end-column="37" />
-          <folding>
-            <element signature="e#14#125#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="795">
+          <caret line="59" column="4" lean-forward="false" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -293,10 +291,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/util/graphql_util.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="46" column="33" lean-forward="false" selection-start-line="46" selection-start-column="33" selection-end-line="46" selection-end-column="33" />
+        <state relative-caret-position="878">
+          <caret line="63" column="25" lean-forward="true" selection-start-line="63" selection-start-column="25" selection-end-line="63" selection-end-column="25" />
           <folding>
             <element signature="e#14#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/rhyme.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="88" column="0" lean-forward="true" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#136#0" expanded="true" />
           </folding>
         </state>
       </provider>
