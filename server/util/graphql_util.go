@@ -65,7 +65,10 @@ func resolveWord(p graphql.ResolveParams) (interface{}, error) {
 	}
 	sentence, ok := p.Args["sentence"].(string)
 	if !ok {
-		return nil,errors.New("sentensce is empty")
+		return nil,errors.New("sentence is empty")
+	}
+	if len([]rune(sentence)) < 2 {
+		return nil,errors.New("word number more than 2")
 	}
 	convertType, ok := p.Args["convert_type"].(string)
 	if !ok {

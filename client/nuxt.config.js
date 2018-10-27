@@ -2,6 +2,11 @@ module.exports = {
   /*
   ** Headers of the page
   */
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy',
+    ['bootstrap-vue/nuxt']
+  ],
   head: {
     title: 'client',
     meta: [
@@ -34,6 +39,12 @@ module.exports = {
         })
       }
     }
+  },
+  axios:{
+    proxy:true,
+  },
+  proxy:{
+    '/api': process.env.USE_LOCAL_SERVER ? 'http://localhost:8080' : 'http://aaa.com',
   }
 }
 

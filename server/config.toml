@@ -1,5 +1,5 @@
 # アプリケーションのポート
-Port = "3000"
+Port = "8080"
 PublicKeyPath = "./public-key.pem"
 PrivateKeyPath ="./pribate-key.rsa"
 [database]

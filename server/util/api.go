@@ -12,6 +12,7 @@ type Response struct {
 
 func WriteJsonHeader(w http.ResponseWriter, status int) http.ResponseWriter {
 	w.WriteHeader(status)
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	return w
 }
