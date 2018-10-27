@@ -1,33 +1,32 @@
-package util
+package my_graphqls
 
 import (
 	"github.com/graphql-go/graphql"
-	"errors"
-	"fmt"
 	"github.com/jinzhu/gorm"
-	"context"
+	"github.com/ryomak/rhymer/server/util/rhyme"
 	"github.com/ryomak/rhymer/server/model"
+	"errors"
 )
-/*******************         global variable      ************************/
-
-func ExecuteQuery(query string, schema graphql.Schema,db *gorm.DB) (*graphql.Result, error) {
-	ctx := context.Background()
-	r := graphql.Do(graphql.Params{
-		Schema:        schema,
-		RequestString: query,
-		Context:context.WithValue(ctx,model.DBKEY,db),
-	})
-	if len(r.Errors) > 0 {
-		fmt.Println(r.Errors)
-		er := ""
-		for _, v := range r.Errors {
-			er += (v.Message + "\n")
-		}
-		return nil, errors.New(er)
+func init(){
+	wordData,err := graphql.NewSchema(schemaConfig)
+	if err != nil{
+		panic(err)
 	}
-	return r,nil
+	schema = wordData
 }
-/*******************         RhymeWord      ************************/
+
+var schema graphql.Schema
+
+var schemaConfig = graphql.SchemaConfig{
+	Query: rootQuery,
+}
+
+var rootQuery = graphql.NewObject(graphql.ObjectConfig{
+	Name:"query",
+	Fields: graphql.Fields{
+		"word": WordField,
+	},
+})
 
 var WordType = graphql.NewObject(graphql.ObjectConfig{
 	Name:"word",
@@ -70,15 +69,21 @@ func resolveWord(p graphql.ResolveParams) (interface{}, error) {
 	if len([]rune(sentence)) < 2 {
 		return nil,errors.New("word number more than 2")
 	}
+	if len([]rune(sentence)) > 30 {
+		return nil,errors.New("word number less than 30")
+	}
 	convertType, ok := p.Args["convert_type"].(string)
 	if !ok {
 		return nil,errors.New("type is empty")
 	}
 	switch convertType {
 	case "normal":
-		return GetNormalRhyme(db, sentence)
+		return rhyme.GetNormalRhyme(db, sentence)
 	default:
-		return GetNormalRhyme(db, sentence)
+		return rhyme.GetNormalRhyme(db, sentence)
 	}
 }
-/********************************************************/
+
+func GetWordSchema()graphql.Schema{
+	return schema
+}

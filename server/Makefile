@@ -5,4 +5,4 @@ db/init:
 	sh script/reset_db.sh
 
 db/seed:
-	go run script/migrate.go
+	go run cmd/migrate.go

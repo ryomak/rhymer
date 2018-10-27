@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/ryomak/rhymer/server/controller"
+	"github.com/ryomak/rhymer/server/util/api"
 	"github.com/ryomak/rhymer/server/util"
 	"github.com/urfave/negroni"
 )
@@ -32,5 +33,5 @@ func Run() {
 }
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
-	util.JsonErrorResponse(w, http.StatusNotFound, "urlが存在しません")
+	api.JsonErrorResponse(w, http.StatusNotFound, "urlが存在しません")
 }

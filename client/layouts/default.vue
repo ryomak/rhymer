@@ -1,9 +1,21 @@
 <template>
   <div>
-    <nuxt/>
+    <lay>
+      <nuxt/>
+    </lay>
+    <load/>
   </div>
 </template>
-
+<script >
+  import Lay from '~/components/layout/index.vue'
+  import Load from '~/components/loading/index.vue'
+  export default {
+    components:{
+      Lay,
+      Load
+    }
+  }
+</script>
 <style>
 html {
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

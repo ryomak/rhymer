@@ -17,8 +17,10 @@
     "@nuxtjs/proxy": "^1.2.4",
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
+    "node-sass": "^4.9.4",
     "nuxt": "^2.0.0",
-    "sass-loader": "^7.1.0"
+    "sass-loader": "^7.1.0",
+    "vue-notifications": "^0.9.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

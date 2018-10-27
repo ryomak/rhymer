@@ -9,4 +9,4 @@ PrivateKeyPath ="./pribate-key.rsa"
     Database = "rhymer_dev"
     Host  = "localhost"
     Port = "3306"
-    Debug = true
+    Debug = false

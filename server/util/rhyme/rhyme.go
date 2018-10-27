@@ -1,4 +1,4 @@
-package util
+package rhyme
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"strings"
 	"github.com/jinzhu/gorm"
 	"github.com/ryomak/rhymer/server/model"
-	"fmt"
+	"github.com/ryomak/vowel-go/vowel"
 )
 
 var t = tokenizer.New()
@@ -29,10 +29,17 @@ func Analyse(str string) []AnalysedWord {
 			continue
 		}
 		status := token.Features()
-		if status[1] == "数" {
+		switch status[1] {
+		case "数":
 			words = append(words, convertNumberToWord(token.Surface)...)
-		} else {
-			words = append(words, AnalysedWord{token.Surface, status[0], status[7]})
+		case "空白":
+			continue
+		default:
+			if status[7] == "*"{
+				words = append(words, AnalysedWord{token.Surface, status[0], token.Surface})
+			}else {
+				words = append(words, AnalysedWord{token.Surface, status[0], status[7]})
+			}
 		}
 	}
 	return words
@@ -51,11 +58,7 @@ func FetchRhyme(str string) ([]string, error) {
 }
 
 func GetNormalRhyme(db *gorm.DB, str string) (interface{}, error) {
-	type param struct {
-		Name       string   `json:"name"`
-		Yomi       string   `json:"yomi"`
-		RhymeWords []string `json:"rhyme_words"`
-	}
+	type param model.WordParam
 	if !IsOnlyJapanese(str) {
 		return param{str,"",nil}, errors.New("can use only japanese")
 	}
@@ -63,13 +66,15 @@ func GetNormalRhyme(db *gorm.DB, str string) (interface{}, error) {
 	res := make([]param, 0)
 	er := ""
 	for _, v := range words {
+		//全てよみを母音にする
+		v.Yomi = vowel.GetVowel(v.Yomi)
 		//DBにあるか確認
 		w,err := model.GetWordByYomi(db,v.Yomi)
 		if err !=nil {
 			er += err.Error()+"\n"
 		}
 		if w != nil{
-			res=append(res,param{w.Name,w.Yomi,w.RhymeWords})
+			res=append(res,param{v.Name,v.Yomi,w.RhymeWords})
 			continue
 		}
 		//なければ取得
@@ -147,6 +152,5 @@ func convertNumberToWord(str string)[]AnalysedWord{
 			w = append(w,AnalysedWord{s,"名詞","レイ"})
 		}
 	}
-	fmt.Printf("%+v",w)
 	return w
 }
